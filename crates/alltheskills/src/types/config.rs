@@ -1,3 +1,17 @@
+//! Configuration types for AllTheSkills
+//!
+//! This module defines the global configuration structure used to manage
+//! skill sources, installation directories, and default behaviors.
+//!
+//! # Example
+//!
+//! ```rust
+//! use alltheskills::AllSkillsConfig;
+//!
+//! let config = AllSkillsConfig::default();
+//! println!("Default install dir: {:?}", config.install_dir);
+//! ```
+
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 

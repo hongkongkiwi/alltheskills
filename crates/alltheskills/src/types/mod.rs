@@ -8,5 +8,5 @@ pub mod skill;
 pub mod source;
 
 pub use config::AllSkillsConfig;
-pub use skill::{Skill, SkillFormat, SkillMetadata, SourceType};
+pub use skill::{Skill, SkillDependency, SkillFormat, SkillMetadata, SourceType};
 pub use source::{SkillScope, SkillSource, SourceConfig};

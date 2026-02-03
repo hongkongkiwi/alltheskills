@@ -136,7 +136,7 @@ async fn validate_single_skill(path: PathBuf) -> Result<(), anyhow::Error> {
     }
 }
 
-async fn validate_skill_structure(path: &PathBuf, source_type: &str) -> Result<(), anyhow::Error> {
+async fn validate_skill_structure(path: &std::path::Path, source_type: &str) -> Result<(), anyhow::Error> {
     if !path.exists() {
         anyhow::bail!("Path does not exist");
     }

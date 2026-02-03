@@ -1,55 +1,6 @@
 //! # AllTheSkills
 //!
 //! A Rust library for reading and installing AI skills from various sources
-//! including Claude, Cline, OpenClaw, Vercel, Cloudflare, and more.
-//!
-//! ## Quick Start
-//!
-//! ```rust
-//! use alltheskills::{SkillReader, AllSkillsConfig, providers::ClaudeProvider};
-//!
-//! #[tokio::main]
-//! async fn main() -> Result<(), Box<dyn std::error::Error>> {
-//!     let config = AllSkillsConfig::default();
-//!     let mut reader = SkillReader::new(config);
-//!
-//!     // Add providers for sources you want to read from
-//!     reader.add_provider(ClaudeProvider);
-//!     reader.add_provider(alltheskills::providers::LocalProvider);
-//!
-//!     // List all skills
-//!     let skills = reader.list_all_skills().await?;
-//!     println!("Found {} skill(s)", skills.len());
-//!
-//!     Ok(())
-//! }
-//! ```
-//!
-//! ## Features
-//!
-//! - **Unified Skill Format** - Read skills from multiple AI assistants with a single API
-//! - **Multiple Providers** - Support for Claude, Cline, OpenClaw, Vercel, Cloudflare, Roo Code, and more
-//! - **Extensible** - Trait-based provider architecture for adding new sources
-//! - **Async** - Built on tokio for asynchronous operations
-//!
-//! ## Supported Sources
-//!
-//! | Source | Location | Format |
-//! |--------|----------|--------|
-//! | Claude Code | `~/.claude/skills/` | `claude.json`, `skill.md` |
-//! | Cline | `~/.cline/skills/` | `cline.json`, `custom-instructions.md` |
-//! | Cursor | `~/.cursor/rules/`, `.cursorrules` | `.cursorrules`, `cursor.json` |
-//! | OpenClaw | `~/.openclaw/skills/` | `skill.json` |
-//! | Vercel AI SDK | `~/.vercel/ai/skills/` | `skill.json`, `ai.config.json` |
-//! | Cloudflare Workers AI | `~/.cloudflare/workers/skills/` | `worker.js/ts`, `wrangler.toml` |
-//! | Roo Code | `~/.roo/skills/` | `roo.json`, `.roomodes` |
-//! | Moltbot | `~/.moltbot/skills/` | `manifest.json`, `SKILL.md` |
-//! | GitHub | Repository URLs | Any format |
-//! | Local | Custom paths | Any format |
-
-//! # AllTheSkills
-//!
-//! A Rust library for reading and installing AI skills from various sources
 //! including Claude, Cline, Cursor, OpenAI Codex, Kilo Code, and more.
 //!
 //! ## Quick Start
@@ -96,12 +47,18 @@
 //! | Cloudflare Workers AI | `~/.cloudflare/workers/skills/` | `worker.js/ts`, `wrangler.toml` |
 //! | GitHub | Repository URLs | Any format |
 //! | Local | Custom paths | Any format |
+//!
+//! ## Feature Flags
+//!
+//! - `git` (default) - Enables GitHub provider support for cloning repositories
 
 use futures::stream::{self, StreamExt};
 
+pub mod dependencies;
 pub mod error;
 pub mod providers;
 pub mod types;
+pub mod utils;
 
 pub use error::Error;
 pub use providers::{KnownSources, SkillProvider};

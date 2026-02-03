@@ -1,3 +1,15 @@
+//! Skill types for AllTheSkills
+//!
+//! This module defines the core [`Skill`] struct and related types
+//! that represent AI skills from various sources.
+//!
+//! # Core Types
+//!
+//! - [`Skill`] - Represents an AI skill with complete metadata
+//! - [`SourceType`] - Enum of supported skill sources
+//! - [`SkillFormat`] - Format of the skill definition file
+//! - [`SkillMetadata`] - Additional metadata about a skill
+
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
@@ -104,4 +116,20 @@ pub struct SkillMetadata {
     pub readme: Option<String>,
     /// Required dependencies or tools
     pub requirements: Vec<String>,
+    /// Dependencies on other skills
+    pub dependencies: Vec<SkillDependency>,
+}
+
+/// A dependency on another skill
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SkillDependency {
+    /// Name or ID of the dependent skill
+    pub name: String,
+    /// Version requirement (e.g., "^1.0.0", ">=2.0.0")
+    pub version_req: Option<String>,
+    /// Source to install from (GitHub URL, local path, etc.)
+    pub source: Option<String>,
+    /// Whether this is an optional dependency
+    #[serde(default)]
+    pub optional: bool,
 }

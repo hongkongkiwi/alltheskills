@@ -1,4 +1,5 @@
 use crate::types::{Skill, SkillFormat, SkillMetadata, SkillSource, SourceConfig, SourceType};
+use crate::utils::copy_skill_dir;
 use crate::{Error, Result};
 use async_trait::async_trait;
 use std::path::PathBuf;
@@ -14,7 +15,7 @@ use std::path::PathBuf;
 /// - `.cursorrules` - Main rules file (markdown format)
 /// - `cursor.json` - Optional metadata configuration
 ///
-/// Reference: https://cursor.sh/
+/// Reference: <https://cursor.sh/>
 pub struct CursorProvider;
 
 #[async_trait]
@@ -30,7 +31,7 @@ impl crate::providers::SkillProvider for CursorProvider {
     fn can_handle(&self, source: &SkillSource) -> bool {
         matches!(source, SkillSource::Local { path } if
             path.to_string_lossy().contains("cursor") ||
-            path.extension().map_or(false, |e| e == "cursorrules")
+            path.extension().is_some_and(|e| e == "cursorrules")
         )
     }
 
@@ -96,10 +97,24 @@ impl crate::providers::SkillProvider for CursorProvider {
         std::fs::read_to_string(&skill.path).map_err(Error::from)
     }
 
-    async fn install(&self, _source: SkillSource, _target: PathBuf) -> Result<Skill> {
-        Err(Error::Install {
-            reason: "Install not yet implemented for Cursor provider".to_string(),
-        })
+    async fn install(&self, source: SkillSource, target: PathBuf) -> Result<Skill> {
+        let source_path = match &source {
+            SkillSource::Local { path } => path.clone(),
+            _ => {
+                return Err(Error::Install {
+                    reason: "Cursor provider only supports local installation".to_string(),
+                })
+            }
+        };
+
+        std::fs::create_dir_all(&target)?;
+        copy_skill_dir(&source_path, &target)?;
+
+        self.parse_skill_dir(target.clone())
+            .await?
+            .ok_or_else(|| Error::Install {
+                reason: "Failed to parse installed Cursor skill".to_string(),
+            })
     }
 }
 

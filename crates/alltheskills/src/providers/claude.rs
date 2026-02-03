@@ -1,4 +1,5 @@
 use crate::types::{Skill, SkillFormat, SkillMetadata, SkillSource, SourceConfig, SourceType};
+use crate::utils::copy_skill_dir;
 use crate::{Error, Result};
 use async_trait::async_trait;
 use std::path::PathBuf;
@@ -52,10 +53,28 @@ impl crate::providers::SkillProvider for ClaudeProvider {
         Ok(content)
     }
 
-    async fn install(&self, _source: SkillSource, _target: PathBuf) -> Result<Skill> {
-        Err(Error::Install {
-            reason: "Install not yet implemented for Claude provider".to_string(),
-        })
+    async fn install(&self, source: SkillSource, target: PathBuf) -> Result<Skill> {
+        let source_path = match &source {
+            SkillSource::Local { path } => path.clone(),
+            _ => {
+                return Err(Error::Install {
+                    reason: "Claude provider only supports local installation".to_string(),
+                })
+            }
+        };
+
+        // Create target directory
+        std::fs::create_dir_all(&target)?;
+
+        // Copy skill files
+        copy_skill_dir(&source_path, &target)?;
+
+        // Parse and return the installed skill
+        self.parse_skill_dir(target.clone())
+            .await?
+            .ok_or_else(|| Error::Install {
+                reason: "Failed to parse installed Claude skill".to_string(),
+            })
     }
 }
 
@@ -98,6 +117,9 @@ impl ClaudeProvider {
             Vec::new()
         };
 
+        // Parse dependencies
+        let dependencies = crate::dependencies::parse_dependencies(&config);
+
         let skill = Skill {
             id: name.to_lowercase().replace(" ", "-"),
             name,
@@ -110,6 +132,7 @@ impl ClaudeProvider {
             metadata: SkillMetadata {
                 author,
                 tags,
+                dependencies,
                 ..Default::default()
             },
             format: SkillFormat::ClaudeSkill,

@@ -1,3 +1,14 @@
+//! Source types for AllTheSkills
+//!
+//! This module defines types for representing skill sources, including
+//! local filesystem paths, GitHub repositories, and remote URLs.
+//!
+//! # Source Types
+//!
+//! - [`SkillSource`] - Location of a skill (local, GitHub, remote)
+//! - [`SourceConfig`] - Configuration for a skill source
+//! - [`SkillScope`] - Installation scope (global, user, project)
+
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 

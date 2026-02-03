@@ -11,14 +11,17 @@ keywords.workspace = true
 categories.workspace = true
 readme.workspace = true
 rust-version.workspace = true
-
 authors.workspace = true
-exclude = ["/tests", "/examples", ".github"]
+
+# Package metadata for documentation and discovery
+exclude = ["/tests", "/examples", ".github", ".gitignore"]
+include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE"]
 
 [package.metadata]
+# Supported AI assistant platforms
 supports = [
     "claude",
-    "cline", 
+    "cline",
     "cursor",
     "openclaw",
     "roo",
@@ -29,20 +32,43 @@ supports = [
     "cloudflare",
 ]
 
+# Documentation metadata for docs.rs
+[package.metadata.docs.rs]
+# Document all features
+all-features = true
+# Enable doc_cfg feature for showing feature gates in docs
+rustdoc-args = ["--cfg", "docsrs"]
+# Define features to document
+deprecated = "warn"
+broken_intra_doc_links = "warn"
+missing_crate_level_docs = "warn"
+private_intra_doc_links = "warn"
+
 [dependencies]
-tokio = { version = "1", features = ["full"] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-serde_yaml = "0.9"
-thiserror = "1.0"
-anyhow = "1.0"
+# Async runtime
+tokio = { workspace = true }
 futures = "0.3"
-url = "2.5"
-git2 = { version = "0.18", optional = true }
-async-trait = "0.1"
-chrono = { version = "0.4", features = ["std", "serde"] }
+
+# Serialization
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml = "0.9"
 toml = "0.8"
+
+# Error handling
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+
+# Async trait support
+async-trait = "0.1"
+
+# Utilities
+url = "2.5"
+chrono = { version = "0.4", features = ["std", "serde"] }
 dirs = "5.0"
+
+# Optional Git support
+git2 = { version = "0.18", optional = true }
 
 [dev-dependencies]
 assert_cmd = "2.0"
@@ -50,10 +76,10 @@ predicates = "3.0"
 chrono = { version = "0.4", features = ["std"] }
 
 [features]
-git = ["dep:git2"]
 default = ["git"]
 
-# Exclude examples and tests from crates.io package
-[package.metadata.docs.rs]
-all-features = true
-rustdoc-args = ["--cfg", "docsrs"]
+# Git provider support - enables cloning from GitHub repositories
+git = ["dep:git2"]
+
+# Full provider support - enables all providers (all are enabled by default)
+full = ["git"]

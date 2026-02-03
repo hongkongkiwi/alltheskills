@@ -37,3 +37,22 @@ categories = [
 ]
 readme = "README.md"
 rust-version = "1.85"
+
+# Workspace dependencies that can be used by all crates
+[workspace.dependencies]
+anyhow = "1.0"
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+
+# Workspace metadata for cargo-release and publishing
+[workspace.metadata.release]
+shared-version = true
+tag-name = "v{{version}}"
+pre-release-commit-message = "chore: release {{version}}"
+tag-message = "chore: release {{version}}"
+
+[workspace.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

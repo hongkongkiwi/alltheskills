@@ -1,4 +1,5 @@
 use crate::types::{Skill, SkillFormat, SkillMetadata, SkillSource, SourceConfig, SourceType};
+use crate::utils::copy_skill_dir;
 use crate::{Error, Result};
 use async_trait::async_trait;
 use std::path::PathBuf;
@@ -100,10 +101,24 @@ impl crate::providers::SkillProvider for MoltbotProvider {
         })
     }
 
-    async fn install(&self, _source: SkillSource, _target: PathBuf) -> Result<Skill> {
-        Err(Error::Install {
-            reason: "Install not yet implemented for Moltbot provider".to_string(),
-        })
+    async fn install(&self, source: SkillSource, target: PathBuf) -> Result<Skill> {
+        let source_path = match &source {
+            SkillSource::Local { path } => path.clone(),
+            _ => {
+                return Err(Error::Install {
+                    reason: "Moltbot provider only supports local installation".to_string(),
+                })
+            }
+        };
+
+        std::fs::create_dir_all(&target)?;
+        copy_skill_dir(&source_path, &target)?;
+
+        self.parse_skill_dir(target.clone())
+            .await?
+            .ok_or_else(|| Error::Install {
+                reason: "Failed to parse installed Moltbot skill".to_string(),
+            })
     }
 }
 

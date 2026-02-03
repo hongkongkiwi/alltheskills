@@ -38,6 +38,25 @@ enum Commands {
         /// Skill name or ID
         name: String,
     },
+    /// Show skill content
+    Show {
+        /// Skill name or ID
+        name: String,
+        /// Output raw content without formatting
+        #[arg(short, long)]
+        raw: bool,
+    },
+    /// Initialize a new skill with boilerplate files
+    Init {
+        /// Name for the new skill
+        name: String,
+        /// Skill type (claude, cline, cursor, roo, codex, kilo, etc.)
+        #[arg(short, long)]
+        source_type: Option<String>,
+        /// Directory to create the skill in
+        #[arg(short, long)]
+        path: Option<String>,
+    },
     /// Export a project as a skill
     ExportAsSkill {
         #[arg(short, long)]
@@ -107,6 +126,16 @@ async fn main() -> Result<(), anyhow::Error> {
         }
         Commands::Info { name } => {
             commands::info_skill(&name).await?;
+        }
+        Commands::Show { name, raw } => {
+            commands::show_skill(&name, raw).await?;
+        }
+        Commands::Init {
+            name,
+            source_type,
+            path,
+        } => {
+            commands::init_skill(&name, source_type.as_deref(), path.as_deref()).await?;
         }
         Commands::ExportAsSkill { output_dir } => {
             commands::export_as_skill(output_dir).await?;
