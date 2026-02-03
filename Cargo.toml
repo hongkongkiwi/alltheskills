@@ -1,0 +1,10 @@
+[workspace]
+members = [
+    "crates/allskills",
+    "crates/allskills-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+authors = ["AllSkills Contributors"]
