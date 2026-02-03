@@ -5,12 +5,12 @@
 [![CI](https://github.com/alltheskills/alltheskills/actions/workflows/ci.yml/badge.svg)](https://github.com/alltheskills/alltheskills/actions)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A Rust library and CLI for reading and installing AI skills from various sources including Claude, Cline, OpenClaw, Moltbot, Vercel, Cloudflare, and more.
+A Rust library and CLI for reading and installing AI skills from various sources including Claude, Cline, Cursor, OpenClaw, Moltbot, Vercel, Cloudflare, and more.
 
 ## Features
 
 - **Unified Skill Format** - Read skills from multiple AI assistants with a single API
-- **Multiple Providers** - Support for Claude, Cline, OpenClaw, Moltbot (formerly ClawdBot), Vercel AI SDK, Cloudflare Workers AI, Roo Code, OpenAI Codex, Kilo Code, and GitHub
+- **Multiple Providers** - Support for Claude, Cline, Cursor, OpenClaw, Moltbot (formerly ClawdBot), Vercel AI SDK, Cloudflare Workers AI, Roo Code, OpenAI Codex, Kilo Code, and GitHub
 - **Flexible Installation** - Install skills from GitHub repositories or local directories
 - **Extensible** - Trait-based provider architecture for adding new sources
 - **Async** - Built on tokio for asynchronous operations
@@ -94,6 +94,7 @@ alltheskills config
 |--------|----------|--------|
 | Claude Code | `~/.claude/skills/` | `claude.json`, `skill.md`, `README.md` |
 | Cline | `~/.cline/skills/` | `cline.json`, `custom-instructions.md`, `README.md` |
+| **Cursor** | `~/.cursor/rules/`, `.cursorrules` | `.cursorrules`, `cursor.json` |
 | OpenClaw | `~/.openclaw/skills/` | `skill.json`, `README.md` |
 | **Moltbot** (formerly ClawdBot) | `~/.moltbot/skills/` or `~/.clawdbot/skills/` | `manifest.json`, `SKILL.md`, `README.md` |
 | Vercel AI SDK | `~/.vercel/ai/skills/` | `skill.json`, `ai.config.json` |
@@ -126,6 +127,7 @@ Each provider checks for an environment variable to override the default skill d
 |----------|---------------------|--------------|
 | Claude | `CLAUDE_SKILLS_DIR` | `~/.claude/skills` |
 | Cline | `CLINE_SKILLS_DIR` | `~/.cline/skills` |
+| **Cursor** | `CURSOR_RULES_DIR` | `~/.cursor/rules` |
 | OpenClaw | `OPENCLAW_SKILLS_DIR` | `~/.openclaw/skills` |
 | Roo Code | `ROO_SKILLS_DIR` | `~/.roo/skills` |
 | **Moltbot** | `MOLTBOT_SKILLS_DIR` or `CLAWDBOT_SKILLS_DIR` | `~/.moltbot/skills` |

@@ -38,10 +38,12 @@
 //! |--------|----------|--------|
 //! | Claude Code | `~/.claude/skills/` | `claude.json`, `skill.md` |
 //! | Cline | `~/.cline/skills/` | `cline.json`, `custom-instructions.md` |
+//! | Cursor | `~/.cursor/rules/`, `.cursorrules` | `.cursorrules`, `cursor.json` |
 //! | OpenClaw | `~/.openclaw/skills/` | `skill.json` |
 //! | Vercel AI SDK | `~/.vercel/ai/skills/` | `skill.json`, `ai.config.json` |
 //! | Cloudflare Workers AI | `~/.cloudflare/workers/skills/` | `worker.js/ts`, `wrangler.toml` |
 //! | Roo Code | `~/.roo/skills/` | `roo.json`, `.roomodes` |
+//! | Moltbot | `~/.moltbot/skills/` | `manifest.json`, `SKILL.md` |
 //! | GitHub | Repository URLs | Any format |
 //! | Local | Custom paths | Any format |
 

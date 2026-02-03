@@ -15,6 +15,7 @@
 |----------|--------|-------------------|-------|
 | **Claude** | ✅ Complete | `claude.json`, `skill.md`, `README.md` | Full implementation with metadata parsing |
 | **Cline** | ✅ Complete | `cline.json`, `custom-instructions.md`, `README.md` | Full implementation |
+| **Cursor** | ✅ Complete | `.cursorrules`, `cursor.json`, `README.md` | Cursor editor rules support |
 | **Roo Code** | ✅ Complete | `roo.json`, `.roomodes`, `README.md` | Formerly Roo Cline |
 | **OpenClaw** | ✅ Complete | `skill.json`, `README.md` | Full implementation |
 | **Moltbot** | ✅ Complete | `manifest.json`, `SKILL.md`, `README.md` | Formerly ClawdBot, supports legacy paths |
