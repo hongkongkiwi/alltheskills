@@ -1,5 +1,8 @@
 use clap::{Parser, Subcommand};
 
+mod skill_exporter;
+mod commands;
+
 #[derive(Parser)]
 #[command(name = "allskills")]
 #[command(author, version, about, long_about = None)]
@@ -14,9 +17,33 @@ enum Commands {
     Install,
     Search,
     Info,
+    ExportAsSkill {
+        #[arg(short, long)]
+        output_dir: Option<String>,
+    },
 }
 
-fn main() {
+#[tokio::main]
+async fn main() -> Result<(), anyhow::Error> {
     let args = Args::parse();
-    println!("AllSkills CLI");
+
+    match args.command {
+        Commands::List => {
+            println!("List command");
+        }
+        Commands::Install => {
+            println!("Install command");
+        }
+        Commands::Search => {
+            println!("Search command");
+        }
+        Commands::Info => {
+            println!("Info command");
+        }
+        Commands::ExportAsSkill { output_dir } => {
+            commands::export_skill::export_as_skill(output_dir).await?;
+        }
+    }
+
+    Ok(())
 }
