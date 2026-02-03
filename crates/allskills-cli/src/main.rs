@@ -53,7 +53,7 @@ enum Commands {
         #[arg(short, long)]
         source_type: String,
         /// Scope for the source (global, user, project)
-        #[arg(short, long, default_value = "user")]
+        #[arg(long, default_value = "user")]
         scope: String,
     },
     /// Remove a source from the configuration
