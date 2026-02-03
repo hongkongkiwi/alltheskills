@@ -8,3 +8,4 @@ allskills = { path = "../allskills" }
 clap = { version = "4.4", features = ["derive"] }
 tokio = { version = "1", features = ["full"] }
 anyhow = "1.0"
+toml = "0.8"

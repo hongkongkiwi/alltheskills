@@ -2,6 +2,7 @@ use clap::{Parser, Subcommand};
 
 mod skill_exporter;
 mod commands;
+mod config;
 
 #[derive(Parser)]
 #[command(name = "allskills")]
@@ -42,6 +43,30 @@ enum Commands {
         #[arg(short, long)]
         output_dir: Option<String>,
     },
+    /// Add a new source to the configuration
+    AddSource {
+        /// Name for the source
+        name: String,
+        /// Path or URL to the source
+        path: String,
+        /// Source type (claude, cline, openclaw, roo, github, local, etc.)
+        #[arg(short, long)]
+        source_type: String,
+        /// Scope for the source (global, user, project)
+        #[arg(short, long, default_value = "user")]
+        scope: String,
+    },
+    /// Remove a source from the configuration
+    RemoveSource {
+        /// Name of the source to remove
+        name: String,
+    },
+    /// Show the current configuration
+    Config {
+        /// Show the config file path
+        #[arg(short, long)]
+        path: bool,
+    },
 }
 
 #[tokio::main]
@@ -69,6 +94,44 @@ async fn main() -> Result<(), anyhow::Error> {
         }
         Commands::ExportAsSkill { output_dir } => {
             commands::export_as_skill(output_dir).await?;
+        }
+        Commands::AddSource { name, path, source_type, scope } => {
+            let scope = match scope.to_lowercase().as_str() {
+                "global" => allskills::SkillScope::Global,
+                "user" => allskills::SkillScope::User,
+                "project" => allskills::SkillScope::Project,
+                _ => allskills::SkillScope::User,
+            };
+            let mut config = config::load_config()?;
+            config::add_source(&mut config, &name, &path, &source_type, scope);
+            config::save_config(&config)?;
+            println!("Added source '{}' to configuration", name);
+        }
+        Commands::RemoveSource { name } => {
+            let mut config = config::load_config()?;
+            if config::remove_source(&mut config, &name) {
+                config::save_config(&config)?;
+                println!("Removed source '{}' from configuration", name);
+            } else {
+                println!("Source '{}' not found in configuration", name);
+            }
+        }
+        Commands::Config { path } => {
+            if path {
+                println!("Config path: {}", config::get_config_path().display());
+            } else {
+                let config = config::load_config()?;
+                println!("Current configuration:");
+                println!("  Version: {}", config.version);
+                println!("  Default scope: {:?}", config.default_scope);
+                println!("  Install dir: {}", config.install_dir.display());
+                println!("  Cache dir: {}", config.cache_dir.display());
+                println!("  Sources:");
+                for source in &config.sources {
+                    println!("    - {} (type: {:?}, scope: {:?}, enabled: {})",
+                        source.name, source.source_type, source.scope, source.enabled);
+                }
+            }
         }
     }
 
