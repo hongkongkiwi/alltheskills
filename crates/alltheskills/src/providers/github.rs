@@ -1,7 +1,7 @@
+use crate::types::{Skill, SkillFormat, SkillMetadata, SkillSource, SourceType};
+use crate::{Error, Result};
 use async_trait::async_trait;
 use std::path::PathBuf;
-use crate::types::{Skill, SkillFormat, SourceType, SkillSource, SkillMetadata};
-use crate::{Result, Error};
 
 pub struct GitHubProvider;
 
@@ -19,7 +19,7 @@ impl crate::providers::SkillProvider for GitHubProvider {
         matches!(source, SkillSource::GitHub { .. })
     }
 
-    async fn list_skills(&self, config: &crate::types::SourceConfig) -> Result<Vec<Skill>> {
+    async fn list_skills(&self, _config: &crate::types::SourceConfig) -> Result<Vec<Skill>> {
         // For GitHub sources, we list skills from the cloned repository
         // This would typically be called after install() has cloned the repo
         Ok(vec![])
@@ -27,13 +27,21 @@ impl crate::providers::SkillProvider for GitHubProvider {
 
     async fn read_skill(&self, skill: &Skill) -> Result<String> {
         let readme_path = skill.path.join("README.md");
-        let content = std::fs::read_to_string(&readme_path).map_err(|e| Error::from(e))?;
+        let content = std::fs::read_to_string(&readme_path).map_err(Error::from)?;
         Ok(content)
     }
 
     async fn install(&self, source: SkillSource, target: PathBuf) -> Result<Skill> {
-        let SkillSource::GitHub { owner, repo, subdir, branch } = source else {
-            return Err(Error::Install { reason: "Invalid source type for GitHub provider".to_string() });
+        let SkillSource::GitHub {
+            owner,
+            repo,
+            subdir,
+            branch,
+        } = source
+        else {
+            return Err(Error::Install {
+                reason: "Invalid source type for GitHub provider".to_string(),
+            });
         };
 
         let repo_name = repo.clone();
@@ -45,8 +53,10 @@ impl crate::providers::SkillProvider for GitHubProvider {
         }
 
         // Clone the repository
-        let repository = git2::Repository::clone(&repo_url, &target)
-            .map_err(|e| Error::Install { reason: format!("Failed to clone: {}", e) })?;
+        let repository =
+            git2::Repository::clone(&repo_url, &target).map_err(|e| Error::Install {
+                reason: format!("Failed to clone: {}", e),
+            })?;
 
         // Checkout specific branch if provided
         if let Some(branch_name) = branch {
@@ -77,9 +87,9 @@ impl crate::providers::SkillProvider for GitHubProvider {
 }
 
 impl GitHubProvider {
-    fn parse_skill_dir(path: &PathBuf, owner: &str, repo: &str) -> Result<Skill> {
+    fn parse_skill_dir(path: &std::path::Path, owner: &str, repo: &str) -> Result<Skill> {
         let json_path = path.join("claude.json");
-        let md_path = path.join("README.md");
+        let _md_path = path.join("README.md");
 
         let (name, description, version, format) = if json_path.exists() {
             let content = std::fs::read_to_string(&json_path)?;
@@ -101,7 +111,9 @@ impl GitHubProvider {
         };
 
         let skill = Skill {
-            id: format!("{}-{}", owner, repo).to_lowercase().replace(" ", "-"),
+            id: format!("{}-{}", owner, repo)
+                .to_lowercase()
+                .replace(" ", "-"),
             name,
             description,
             version,
@@ -112,7 +124,7 @@ impl GitHubProvider {
                 branch: None,
             },
             source_type: SourceType::GitHub,
-            path: path.clone(),
+            path: path.to_path_buf(),
             installed_at: chrono::Utc::now(),
             metadata: SkillMetadata {
                 repository: Some(format!("https://github.com/{}/{}", owner, repo)),

@@ -1,5 +1,3 @@
-use std::path::PathBuf;
-
 /// Generates a Claude skill README for the alltheskills manager
 pub fn generate_alltheskills_skill_readme() -> String {
     r#"# AllSkills Manager
@@ -42,7 +40,8 @@ cache_dir = ".alltheskills/cache"
 
 - `ALLSKILLS_CONFIG_DIR` - Override config directory
 - `ALLSKILLS_SKILLS_DIR` - Override skills directory
-"#.to_string()
+"#
+    .to_string()
 }
 
 /// Generates a claude.json for the alltheskills skill

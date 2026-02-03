@@ -1,20 +1,31 @@
-use alltheskills::{SkillReader, AllSkillsConfig};
+use alltheskills::providers::{
+    ClaudeProvider, ClineProvider, LocalProvider, MoltbotProvider, OpenClawProvider, RooProvider,
+};
+use alltheskills::{AllSkillsConfig, SkillReader};
 
 pub async fn search_skills(query: &str) -> Result<(), anyhow::Error> {
     let config = AllSkillsConfig::default();
     let mut reader = SkillReader::new(config);
 
-    reader.add_provider(alltheskills::providers::claude::ClaudeProvider);
-    reader.add_provider(alltheskills::providers::local::LocalProvider);
-    reader.add_provider(alltheskills::providers::openclaw::OpenClawProvider);
+    reader.add_provider(ClaudeProvider);
+    reader.add_provider(ClineProvider);
+    reader.add_provider(RooProvider);
+    reader.add_provider(OpenClawProvider);
+    reader.add_provider(MoltbotProvider);
+    reader.add_provider(LocalProvider);
 
     let query_lower = query.to_lowercase();
 
-    let skills = reader.search_skills(|s| {
-        s.name.to_lowercase().contains(&query_lower)
-            || s.description.to_lowercase().contains(&query_lower)
-            || s.metadata.tags.iter().any(|t| t.to_lowercase().contains(&query_lower))
-    }).await?;
+    let skills = reader
+        .search_skills(|s| {
+            s.name.to_lowercase().contains(&query_lower)
+                || s.description.to_lowercase().contains(&query_lower)
+                || s.metadata
+                    .tags
+                    .iter()
+                    .any(|t| t.to_lowercase().contains(&query_lower))
+        })
+        .await?;
 
     if skills.is_empty() {
         println!("No skills found matching '{}'.", query);

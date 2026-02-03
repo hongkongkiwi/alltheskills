@@ -1,7 +1,7 @@
+use crate::types::{Skill, SkillFormat, SkillMetadata, SkillSource, SourceConfig, SourceType};
+use crate::{Error, Result};
 use async_trait::async_trait;
 use std::path::PathBuf;
-use crate::types::{Skill, SkillFormat, SourceType, SkillSource, SkillMetadata, SourceConfig};
-use crate::{Result, Error};
 
 pub struct CloudflareProvider;
 
@@ -42,10 +42,10 @@ impl crate::providers::SkillProvider for CloudflareProvider {
 
         if let Ok(entries) = std::fs::read_dir(path) {
             for entry in entries.flatten() {
-                if entry.path().is_dir() {
-                    if let Some(skill) = self.parse_skill_dir(entry.path()).await? {
-                        skills.push(skill);
-                    }
+                if entry.path().is_dir()
+                    && let Some(skill) = self.parse_skill_dir(entry.path()).await?
+                {
+                    skills.push(skill);
                 }
             }
         }
@@ -61,7 +61,9 @@ impl crate::providers::SkillProvider for CloudflareProvider {
 
     async fn install(&self, _source: SkillSource, _target: PathBuf) -> Result<Skill> {
         // Cloudflare workers can be installed via wrangler or direct deploy
-        Err(Error::Install { reason: "Install via wrangler CLI: npx wrangler deploy".to_string() })
+        Err(Error::Install {
+            reason: "Install via wrangler CLI: npx wrangler deploy".to_string(),
+        })
     }
 }
 
@@ -81,7 +83,8 @@ impl CloudflareProvider {
     }
 
     async fn parse_worker(&self, path: PathBuf, is_js: bool) -> Result<Option<Skill>> {
-        let name = path.file_name()
+        let name = path
+            .file_name()
             .and_then(|n| n.to_str())
             .unwrap_or_default()
             .to_string();
@@ -115,24 +118,35 @@ impl CloudflareProvider {
                 homepage: Some("https://developers.cloudflare.com/workers/".to_string()),
                 ..Default::default()
             },
-            format: if is_js { SkillFormat::GenericJson } else { SkillFormat::Unknown },
+            format: if is_js {
+                SkillFormat::GenericJson
+            } else {
+                SkillFormat::Unknown
+            },
         };
 
         Ok(Some(skill))
     }
 
-    async fn parse_wrangler_config(&self, path: PathBuf, config_path: PathBuf) -> Result<Option<Skill>> {
+    async fn parse_wrangler_config(
+        &self,
+        path: PathBuf,
+        config_path: PathBuf,
+    ) -> Result<Option<Skill>> {
         let content = std::fs::read_to_string(&config_path)?;
-        let config: toml::Value = content.parse()
-            .map_err(|e| Error::Parse { message: format!("Failed to parse wrangler.toml: {}", e) })?;
+        let config: toml::Value = content.parse().map_err(|e| Error::Parse {
+            message: format!("Failed to parse wrangler.toml: {}", e),
+        })?;
 
-        let name = config.get("name")
+        let name = config
+            .get("name")
             .and_then(|v| v.as_str())
             .or(path.file_name().and_then(|n| n.to_str()))
             .unwrap_or("cloudflare-worker")
             .to_string();
 
-        let description = config.get("description")
+        let description = config
+            .get("description")
             .and_then(|v| v.as_str())
             .unwrap_or("Cloudflare Workers AI skill")
             .to_string();

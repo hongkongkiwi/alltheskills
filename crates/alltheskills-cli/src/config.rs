@@ -1,6 +1,6 @@
-use std::path::PathBuf;
-use alltheskills::{AllSkillsConfig, SkillScope, SourceType};
 use alltheskills::types::SourceConfig;
+use alltheskills::{AllSkillsConfig, SkillScope, SourceType};
+use std::path::PathBuf;
 
 const CONFIG_FILENAME: &str = "alltheskills.toml";
 
@@ -70,7 +70,7 @@ pub fn save_config(config: &AllSkillsConfig) -> Result<(), anyhow::Error> {
 pub fn add_source(
     config: &mut AllSkillsConfig,
     name: &str,
-    path: &str,
+    _path: &str,
     source_type: &str,
     scope: SkillScope,
 ) {
@@ -82,7 +82,8 @@ pub fn add_source(
             "openclaw" => SourceType::Custom("openclaw".to_string()),
             "roo" | "roocode" => SourceType::RooCode,
             "codex" | "openai" => SourceType::OpenAICodex,
-            "kilo" => SourceType::KiloCode,
+            "kilo" | "kilocode" => SourceType::KiloCode,
+            "moltbot" | "clawdbot" => SourceType::Moltbot,
             "github" => SourceType::GitHub,
             "local" => SourceType::Local,
             _ => SourceType::Custom(source_type.to_string()),
@@ -102,6 +103,7 @@ pub fn remove_source(config: &mut AllSkillsConfig, name: &str) -> bool {
 }
 
 /// Get known skill directories based on platform
+#[allow(dead_code)]
 pub fn get_known_skill_directories() -> Vec<(String, PathBuf)> {
     let mut dirs = Vec::new();
 
@@ -125,5 +127,26 @@ pub fn get_known_skill_directories() -> Vec<(String, PathBuf)> {
         dirs.push(("Roo Code".to_string(), path));
     }
 
+    // Check Moltbot
+    if let Some(path) = alltheskills::KnownSources::moltbot_skills_dir() {
+        dirs.push(("Moltbot".to_string(), path));
+    }
+
     dirs
+}
+
+/// Get a list of supported source types
+#[allow(dead_code)]
+pub fn supported_source_types() -> Vec<(&'static str, &'static str)> {
+    vec![
+        ("claude", "Claude Code skills"),
+        ("cline", "Cline skills"),
+        ("roo, roocode", "Roo Code skills"),
+        ("openclaw", "OpenClaw skills"),
+        ("moltbot, clawdbot", "Moltbot (formerly ClawdBot) skills"),
+        ("codex, openai", "OpenAI Codex skills"),
+        ("kilo, kilocode", "Kilo Code skills"),
+        ("github", "GitHub repository"),
+        ("local", "Local directory"),
+    ]
 }

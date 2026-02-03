@@ -5,12 +5,12 @@
 [![CI](https://github.com/alltheskills/alltheskills/actions/workflows/ci.yml/badge.svg)](https://github.com/alltheskills/alltheskills/actions)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A Rust library and CLI for reading and installing AI skills from various sources including Claude, Cline, OpenClaw, Vercel, Cloudflare, and more.
+A Rust library and CLI for reading and installing AI skills from various sources including Claude, Cline, OpenClaw, Moltbot, Vercel, Cloudflare, and more.
 
 ## Features
 
 - **Unified Skill Format** - Read skills from multiple AI assistants with a single API
-- **Multiple Providers** - Support for Claude, Cline, OpenClaw, Vercel AI SDK, Cloudflare Workers AI, Roo Code, OpenAI Codex, Kilo Code, and GitHub
+- **Multiple Providers** - Support for Claude, Cline, OpenClaw, Moltbot (formerly ClawdBot), Vercel AI SDK, Cloudflare Workers AI, Roo Code, OpenAI Codex, Kilo Code, and GitHub
 - **Flexible Installation** - Install skills from GitHub repositories or local directories
 - **Extensible** - Trait-based provider architecture for adding new sources
 - **Async** - Built on tokio for asynchronous operations
@@ -70,33 +70,73 @@ alltheskills list
 alltheskills search git
 
 # Install a skill from GitHub
-alltheskills install --from https://github.com/user/skill-repo
+alltheskills install https://github.com/user/skill-repo
+
+# Install a skill from a local directory
+alltheskills install /path/to/skill --target ./my-skills
 
 # Get detailed information about a skill
 alltheskills info my-skill
 
 # Export alltheskills as a Claude skill
-alltheskills export-as-skill --output ~/.claude/skills/alltheskills-manager
+alltheskills export-as-skill --output-dir ~/.claude/skills/alltheskills-manager
+
+# Add a new skill source
+alltheskills add-source my-source /path/to/skills --source-type local
+
+# Show configuration
+alltheskills config
 ```
 
 ## Supported Sources
 
 | Source | Location | Format |
 |--------|----------|--------|
-| Claude Code | `~/.claude/skills/` | JSON/YAML + markdown |
-| Cline | `~/.cline/skills/` | JSON config |
-| OpenClaw | `~/.openclaw/skills/` | skill.json |
-| Vercel AI SDK | `~/.vercel/ai/skills/` | skill.json, ai.config.json |
-| Cloudflare Workers AI | `~/.cloudflare/workers/skills/` | worker.js/ts, wrangler.toml |
-| Roo Code | `~/.roo/skills/` | JSON/YAML |
+| Claude Code | `~/.claude/skills/` | `claude.json`, `skill.md`, `README.md` |
+| Cline | `~/.cline/skills/` | `cline.json`, `custom-instructions.md`, `README.md` |
+| OpenClaw | `~/.openclaw/skills/` | `skill.json`, `README.md` |
+| **Moltbot** (formerly ClawdBot) | `~/.moltbot/skills/` or `~/.clawdbot/skills/` | `manifest.json`, `SKILL.md`, `README.md` |
+| Vercel AI SDK | `~/.vercel/ai/skills/` | `skill.json`, `ai.config.json` |
+| Cloudflare Workers AI | `~/.cloudflare/workers/skills/` | `worker.js/ts`, `wrangler.toml` |
+| Roo Code | `~/.roo/skills/` | `roo.json`, `.roomodes`, `README.md` |
 | OpenAI Codex | `~/.codex/skills/` | JSON |
 | Kilo Code | `~/.kilo/skills/` | YAML + markdown |
 | GitHub | Repository URLs | Any format |
 | Local | Custom paths | Any format |
 
+### Moltbot (ClawdBot) Skills
+
+Moltbot (formerly known as ClawdBot) uses a `SKILL.md` format with a `manifest.json` configuration:
+
+```text
+~/.moltbot/skills/my-skill/
+├── manifest.json    # Skill metadata and commands
+├── SKILL.md         # Main skill instructions
+├── index.ts         # Implementation (optional)
+└── README.md        # Documentation (optional)
+```
+
+The library automatically detects both the new `.moltbot` path and the legacy `.clawdbot` path.
+
+### Environment Variables
+
+Each provider checks for an environment variable to override the default skill directory:
+
+| Provider | Environment Variable | Default Path |
+|----------|---------------------|--------------|
+| Claude | `CLAUDE_SKILLS_DIR` | `~/.claude/skills` |
+| Cline | `CLINE_SKILLS_DIR` | `~/.cline/skills` |
+| OpenClaw | `OPENCLAW_SKILLS_DIR` | `~/.openclaw/skills` |
+| Roo Code | `ROO_SKILLS_DIR` | `~/.roo/skills` |
+| **Moltbot** | `MOLTBOT_SKILLS_DIR` or `CLAWDBOT_SKILLS_DIR` | `~/.moltbot/skills` |
+| Vercel | `VERCEL_SKILLS_DIR` | `~/.vercel/ai/skills` |
+| Cloudflare | `CLOUDFLARE_SKILLS_DIR` | `~/.cloudflare/workers/skills` |
+| Kilo Code | `KILO_SKILLS_DIR` | `~/.kilo/skills` |
+| OpenAI Codex | `CODEX_SKILLS_DIR` | `~/.codex/skills` |
+
 ## Custom Providers
 
-Create custom providers by implementing the `SkillProvider` trait:
+Create custom providers by implementing the [`SkillProvider`] trait:
 
 ```rust
 use async_trait::async_trait;
@@ -144,6 +184,58 @@ version = 1
 default_scope = "user"
 install_dir = ".alltheskills"
 cache_dir = ".alltheskills/cache"
+```
+
+Or use the CLI to manage configuration:
+
+```bash
+# Show current configuration
+alltheskills config
+
+# Show config file path
+alltheskills config --path
+
+# Add a source
+alltheskills add-source my-skills ~/my-skills --source-type local
+
+# Remove a source
+alltheskills remove-source my-skills
+```
+
+## Library Features
+
+### Re-exported Providers
+
+All providers are re-exported for convenient access:
+
+```rust
+use alltheskills::providers::{
+    ClaudeProvider,
+    ClineProvider,
+    RooProvider,
+    OpenClawProvider,
+    MoltbotProvider,
+    VercelProvider,
+    CloudflareProvider,
+    GitHubProvider,
+    LocalProvider,
+};
+```
+
+### Skill Detection
+
+The [`KnownSources`] struct provides methods to detect skill directories:
+
+```rust
+use alltheskills::providers::KnownSources;
+
+if let Some(path) = KnownSources::claude_skills_dir() {
+    println!("Claude skills found at: {}", path.display());
+}
+
+if let Some(path) = KnownSources::moltbot_skills_dir() {
+    println!("Moltbot skills found at: {}", path.display());
+}
 ```
 
 ## Contributing

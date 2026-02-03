@@ -1,7 +1,7 @@
+use crate::types::{Skill, SkillFormat, SkillMetadata, SkillSource, SourceType};
+use crate::{Error, Result};
 use async_trait::async_trait;
 use std::path::PathBuf;
-use crate::types::{Skill, SkillFormat, SourceType, SkillSource, SkillMetadata};
-use crate::{Result, Error};
 
 pub struct LocalProvider;
 
@@ -29,10 +29,10 @@ impl crate::providers::SkillProvider for LocalProvider {
 
         if let Ok(entries) = std::fs::read_dir(path) {
             for entry in entries.flatten() {
-                if entry.path().is_dir() {
-                    if let Some(skill) = self.parse_skill_dir(entry.path()).await? {
-                        skills.push(skill);
-                    }
+                if entry.path().is_dir()
+                    && let Some(skill) = self.parse_skill_dir(entry.path()).await?
+                {
+                    skills.push(skill);
                 }
             }
         }
@@ -42,13 +42,15 @@ impl crate::providers::SkillProvider for LocalProvider {
 
     async fn read_skill(&self, skill: &Skill) -> Result<String> {
         let readme_path = skill.path.join("README.md");
-        let content = std::fs::read_to_string(&readme_path).map_err(|e| Error::from(e))?;
+        let content = std::fs::read_to_string(&readme_path).map_err(Error::from)?;
         Ok(content)
     }
 
     async fn install(&self, source: SkillSource, target: PathBuf) -> Result<Skill> {
         let SkillSource::Local { path: source_path } = source else {
-            return Err(Error::Install { reason: "Invalid source type for Local provider".to_string() });
+            return Err(Error::Install {
+                reason: "Invalid source type for Local provider".to_string(),
+            });
         };
 
         // Copy directory contents
@@ -66,8 +68,11 @@ impl crate::providers::SkillProvider for LocalProvider {
         }
 
         // Parse the installed skill
-        self.parse_skill_dir(target.clone()).await?
-            .ok_or_else(|| Error::Install { reason: "Failed to parse installed skill".to_string() })
+        self.parse_skill_dir(target.clone())
+            .await?
+            .ok_or_else(|| Error::Install {
+                reason: "Failed to parse installed skill".to_string(),
+            })
     }
 }
 
@@ -90,10 +95,17 @@ impl LocalProvider {
         let config: serde_json::Value = serde_json::from_str(&content)?;
 
         let skill = Skill {
-            id: config["name"].as_str().unwrap_or_default().to_string()
-                .to_lowercase().replace(" ", "-"),
+            id: config["name"]
+                .as_str()
+                .unwrap_or_default()
+                .to_string()
+                .to_lowercase()
+                .replace(" ", "-"),
             name: config["name"].as_str().unwrap_or_default().to_string(),
-            description: config["description"].as_str().unwrap_or_default().to_string(),
+            description: config["description"]
+                .as_str()
+                .unwrap_or_default()
+                .to_string(),
             version: config["version"].as_str().map(|s| s.to_string()),
             source: SkillSource::Local { path: path.clone() },
             source_type: SourceType::Local,
@@ -101,8 +113,13 @@ impl LocalProvider {
             installed_at: chrono::Utc::now(),
             metadata: SkillMetadata {
                 author: config["author"].as_str().map(|s| s.to_string()),
-                tags: config["tags"].as_array().cloned().unwrap_or_default()
-                    .iter().filter_map(|v| v.as_str().map(|s| s.to_string())).collect(),
+                tags: config["tags"]
+                    .as_array()
+                    .cloned()
+                    .unwrap_or_default()
+                    .iter()
+                    .filter_map(|v| v.as_str().map(|s| s.to_string()))
+                    .collect(),
                 ..Default::default()
             },
             format: SkillFormat::GenericJson,
@@ -112,7 +129,8 @@ impl LocalProvider {
     }
 
     async fn parse_markdown(&self, path: PathBuf) -> Result<Option<Skill>> {
-        let name = path.file_name()
+        let name = path
+            .file_name()
             .and_then(|n| n.to_str())
             .unwrap_or_default()
             .to_string();

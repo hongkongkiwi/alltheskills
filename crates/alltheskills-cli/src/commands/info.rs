@@ -1,19 +1,24 @@
-use alltheskills::{SkillReader, AllSkillsConfig};
+use alltheskills::providers::{
+    ClaudeProvider, ClineProvider, LocalProvider, MoltbotProvider, OpenClawProvider, RooProvider,
+};
+use alltheskills::{AllSkillsConfig, SkillReader};
 
 pub async fn info_skill(name: &str) -> Result<(), anyhow::Error> {
     let config = AllSkillsConfig::default();
     let mut reader = SkillReader::new(config);
 
-    reader.add_provider(alltheskills::providers::claude::ClaudeProvider);
-    reader.add_provider(alltheskills::providers::local::LocalProvider);
-    reader.add_provider(alltheskills::providers::openclaw::OpenClawProvider);
+    reader.add_provider(ClaudeProvider);
+    reader.add_provider(ClineProvider);
+    reader.add_provider(RooProvider);
+    reader.add_provider(OpenClawProvider);
+    reader.add_provider(MoltbotProvider);
+    reader.add_provider(LocalProvider);
 
     let name_lower = name.to_lowercase();
 
-    let skills = reader.search_skills(|s| {
-        s.name.to_lowercase() == name_lower
-            || s.id.to_lowercase() == name_lower
-    }).await?;
+    let skills = reader
+        .search_skills(|s| s.name.to_lowercase() == name_lower || s.id.to_lowercase() == name_lower)
+        .await?;
 
     if skills.is_empty() {
         println!("Skill '{}' not found.", name);
@@ -36,6 +41,18 @@ pub async fn info_skill(name: &str) -> Result<(), anyhow::Error> {
         }
         if !skill.metadata.tags.is_empty() {
             println!("Tags: {}", skill.metadata.tags.join(", "));
+        }
+        if let Some(homepage) = &skill.metadata.homepage {
+            println!("Homepage: {}", homepage);
+        }
+        if let Some(repo) = &skill.metadata.repository {
+            println!("Repository: {}", repo);
+        }
+        if let Some(license) = &skill.metadata.license {
+            println!("License: {}", license);
+        }
+        if !skill.metadata.requirements.is_empty() {
+            println!("Requirements: {}", skill.metadata.requirements.join(", "));
         }
     }
 

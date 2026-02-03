@@ -1,7 +1,7 @@
+use crate::types::{Skill, SkillFormat, SkillMetadata, SkillSource, SourceConfig, SourceType};
+use crate::{Error, Result};
 use async_trait::async_trait;
 use std::path::PathBuf;
-use crate::types::{Skill, SkillFormat, SourceType, SkillSource, SkillMetadata, SourceConfig};
-use crate::{Result, Error};
 
 pub struct ClaudeProvider;
 
@@ -24,7 +24,9 @@ impl crate::providers::SkillProvider for ClaudeProvider {
             SourceType::Claude => {
                 // For Claude, we need to get the path from the skill source
                 // This is a workaround - ideally SourceConfig should contain the actual path
-                PathBuf::from(format!("/Users/andy/.claude/skills"))
+                dirs::home_dir()
+                    .map(|h| h.join(".claude/skills"))
+                    .unwrap_or_else(|| PathBuf::from(".claude/skills"))
             }
             _ => return Ok(vec![]),
         };
@@ -33,10 +35,10 @@ impl crate::providers::SkillProvider for ClaudeProvider {
 
         if let Ok(entries) = std::fs::read_dir(path) {
             for entry in entries.flatten() {
-                if entry.path().is_dir() {
-                    if let Some(skill) = self.parse_skill_dir(entry.path()).await? {
-                        skills.push(skill);
-                    }
+                if entry.path().is_dir()
+                    && let Some(skill) = self.parse_skill_dir(entry.path()).await?
+                {
+                    skills.push(skill);
                 }
             }
         }
@@ -46,12 +48,14 @@ impl crate::providers::SkillProvider for ClaudeProvider {
 
     async fn read_skill(&self, skill: &Skill) -> Result<String> {
         let readme_path = skill.path.join("README.md");
-        let content = std::fs::read_to_string(&readme_path).map_err(|e| Error::from(e))?;
+        let content = std::fs::read_to_string(&readme_path).map_err(Error::from)?;
         Ok(content)
     }
 
     async fn install(&self, _source: SkillSource, _target: PathBuf) -> Result<Skill> {
-        Err(Error::Install { reason: "Install not yet implemented for Claude provider".to_string() })
+        Err(Error::Install {
+            reason: "Install not yet implemented for Claude provider".to_string(),
+        })
     }
 }
 
@@ -72,16 +76,24 @@ impl ClaudeProvider {
 
     async fn parse_claude_json(&self, path: PathBuf, json_path: PathBuf) -> Result<Option<Skill>> {
         let content = std::fs::read_to_string(&json_path)?;
-        let config: serde_json::Value = serde_json::from_str(&content)
-            .map_err(|e| Error::Parse { message: format!("Failed to parse claude.json: {}", e) })?;
+        let config: serde_json::Value =
+            serde_json::from_str(&content).map_err(|e| Error::Parse {
+                message: format!("Failed to parse claude.json: {}", e),
+            })?;
 
         let name = config["name"].as_str().unwrap_or_default().to_string();
-        let description = config["description"].as_str().unwrap_or_default().to_string();
+        let description = config["description"]
+            .as_str()
+            .unwrap_or_default()
+            .to_string();
         let author = config["author"].as_str().map(|s| s.to_string());
         let version = config["version"].as_str().map(|s| s.to_string());
 
         let tags: Vec<String> = if let Some(tags_array) = config["tags"].as_array() {
-            tags_array.iter().filter_map(|t| t.as_str().map(|s| s.to_string())).collect()
+            tags_array
+                .iter()
+                .filter_map(|t| t.as_str().map(|s| s.to_string()))
+                .collect()
         } else {
             Vec::new()
         };
@@ -108,7 +120,8 @@ impl ClaudeProvider {
 
     async fn parse_skill_md(&self, path: PathBuf, _md_path: PathBuf) -> Result<Option<Skill>> {
         // Parse markdown-based skill (older format)
-        let name = path.file_name()
+        let name = path
+            .file_name()
             .and_then(|n| n.to_str())
             .unwrap_or_default()
             .to_string();

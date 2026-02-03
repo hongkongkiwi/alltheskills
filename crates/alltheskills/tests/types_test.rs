@@ -1,5 +1,5 @@
 use alltheskills::Skill;
-use alltheskills::types::{SkillFormat, SourceType, SkillMetadata, SkillScope, SkillSource};
+use alltheskills::types::{SkillFormat, SkillMetadata, SkillScope, SkillSource, SourceType};
 use std::path::PathBuf;
 
 #[test]
@@ -48,7 +48,10 @@ fn test_skill_format_variants() {
     // Verify all format variants exist
     assert_eq!(format!("{:?}", SkillFormat::ClaudeSkill), "ClaudeSkill");
     assert_eq!(format!("{:?}", SkillFormat::ClaudePlugin), "ClaudePlugin");
-    assert_eq!(format!("{:?}", SkillFormat::GenericMarkdown), "GenericMarkdown");
+    assert_eq!(
+        format!("{:?}", SkillFormat::GenericMarkdown),
+        "GenericMarkdown"
+    );
     assert_eq!(format!("{:?}", SkillFormat::GenericJson), "GenericJson");
     assert_eq!(format!("{:?}", SkillFormat::Unknown), "Unknown");
 }
@@ -82,7 +85,12 @@ fn test_skill_source_github() {
     };
 
     match source {
-        SkillSource::GitHub { owner, repo, subdir, branch } => {
+        SkillSource::GitHub {
+            owner,
+            repo,
+            subdir,
+            branch,
+        } => {
             assert_eq!(owner, "test-owner");
             assert_eq!(repo, "test-repo");
             assert_eq!(subdir, Some("skills/my-skill".to_string()));

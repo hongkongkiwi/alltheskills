@@ -1,8 +1,8 @@
 use clap::{Parser, Subcommand};
 
-mod skill_exporter;
 mod commands;
 mod config;
+mod skill_exporter;
 
 #[derive(Parser)]
 #[command(name = "alltheskills")]
@@ -95,7 +95,12 @@ async fn main() -> Result<(), anyhow::Error> {
         Commands::ExportAsSkill { output_dir } => {
             commands::export_as_skill(output_dir).await?;
         }
-        Commands::AddSource { name, path, source_type, scope } => {
+        Commands::AddSource {
+            name,
+            path,
+            source_type,
+            scope,
+        } => {
             let scope = match scope.to_lowercase().as_str() {
                 "global" => alltheskills::SkillScope::Global,
                 "user" => alltheskills::SkillScope::User,
@@ -128,8 +133,10 @@ async fn main() -> Result<(), anyhow::Error> {
                 println!("  Cache dir: {}", config.cache_dir.display());
                 println!("  Sources:");
                 for source in &config.sources {
-                    println!("    - {} (type: {:?}, scope: {:?}, enabled: {})",
-                        source.name, source.source_type, source.scope, source.enabled);
+                    println!(
+                        "    - {} (type: {:?}, scope: {:?}, enabled: {})",
+                        source.name, source.source_type, source.scope, source.enabled
+                    );
                 }
             }
         }

@@ -1,5 +1,5 @@
-use std::path::PathBuf;
 use crate::skill_exporter::{generate_alltheskills_skill_readme, generate_claude_json};
+use std::path::PathBuf;
 
 pub async fn export_as_skill(output_dir: Option<String>) -> Result<(), anyhow::Error> {
     let output = output_dir.unwrap_or_else(|| ".alltheskills/skill".to_string());

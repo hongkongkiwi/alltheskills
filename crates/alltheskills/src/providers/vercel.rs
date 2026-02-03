@@ -1,7 +1,7 @@
+use crate::types::{Skill, SkillFormat, SkillMetadata, SkillSource, SourceConfig, SourceType};
+use crate::{Error, Result};
 use async_trait::async_trait;
 use std::path::PathBuf;
-use crate::types::{Skill, SkillFormat, SourceType, SkillSource, SkillMetadata, SourceConfig};
-use crate::{Result, Error};
 
 pub struct VercelProvider;
 
@@ -42,10 +42,10 @@ impl crate::providers::SkillProvider for VercelProvider {
 
         if let Ok(entries) = std::fs::read_dir(path) {
             for entry in entries.flatten() {
-                if entry.path().is_dir() {
-                    if let Some(skill) = self.parse_skill_dir(entry.path()).await? {
-                        skills.push(skill);
-                    }
+                if entry.path().is_dir()
+                    && let Some(skill) = self.parse_skill_dir(entry.path()).await?
+                {
+                    skills.push(skill);
                 }
             }
         }
@@ -60,7 +60,9 @@ impl crate::providers::SkillProvider for VercelProvider {
     }
 
     async fn install(&self, _source: SkillSource, _target: PathBuf) -> Result<Skill> {
-        Err(Error::Install { reason: "Install not yet implemented for Vercel provider".to_string() })
+        Err(Error::Install {
+            reason: "Install not yet implemented for Vercel provider".to_string(),
+        })
     }
 }
 
@@ -83,7 +85,8 @@ impl VercelProvider {
         let config: serde_json::Value = serde_json::from_str(&content)?;
 
         // Parse tags array safely
-        let tags: Vec<String> = config["tags"].as_array()
+        let tags: Vec<String> = config["tags"]
+            .as_array()
             .map(|arr| {
                 arr.iter()
                     .filter_map(|t| t.as_str().map(|s| s.to_string()))
@@ -94,7 +97,10 @@ impl VercelProvider {
         let skill = Skill {
             id: config["id"].as_str().unwrap_or_default().to_string(),
             name: config["name"].as_str().unwrap_or_default().to_string(),
-            description: config["description"].as_str().unwrap_or_default().to_string(),
+            description: config["description"]
+                .as_str()
+                .unwrap_or_default()
+                .to_string(),
             version: config["version"].as_str().map(|s| s.to_string()),
             source: SkillSource::Local { path: path.clone() },
             source_type: SourceType::Custom("vercel".to_string()),
@@ -116,7 +122,8 @@ impl VercelProvider {
         let content = std::fs::read_to_string(&config_path)?;
         let config: serde_json::Value = serde_json::from_str(&content)?;
 
-        let name = path.file_name()
+        let name = path
+            .file_name()
             .and_then(|n| n.to_str())
             .unwrap_or_default()
             .to_string();
@@ -124,7 +131,10 @@ impl VercelProvider {
         let skill = Skill {
             id: name.to_lowercase().replace(" ", "-"),
             name: config["name"].as_str().unwrap_or(&name).to_string(),
-            description: config["description"].as_str().unwrap_or("Vercel AI skill").to_string(),
+            description: config["description"]
+                .as_str()
+                .unwrap_or("Vercel AI skill")
+                .to_string(),
             version: config["version"].as_str().map(|s| s.to_string()),
             source: SkillSource::Local { path: path.clone() },
             source_type: SourceType::Custom("vercel".to_string()),

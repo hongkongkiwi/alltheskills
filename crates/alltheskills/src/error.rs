@@ -1,30 +1,50 @@
+//! Error types for the AllTheSkills library
+
 use thiserror::Error;
 
+/// Errors that can occur when working with skills
 #[derive(Debug, Error)]
 pub enum Error {
+    /// I/O error occurred
     #[error("IO error: {source}")]
-    Io { source: std::io::Error },
+    Io {
+        #[source]
+        source: std::io::Error,
+    },
 
+    /// Failed to parse skill data
     #[error("Parse error: {message}")]
     Parse { message: String },
 
+    /// Skill was not found
     #[error("Skill not found: {name}")]
     NotFound { name: String },
 
+    /// Unsupported skill format
     #[error("Unsupported format: {format}")]
     UnsupportedFormat { format: String },
 
+    /// Configuration error
     #[error("Configuration error: {message}")]
     Config { message: String },
 
+    /// Installation failed
     #[error("Installation failed: {reason}")]
     Install { reason: String },
 
+    /// Git operation failed
     #[error("Git error: {source}")]
-    Git { source: git2::Error },
+    Git {
+        #[source]
+        source: git2::Error,
+    },
 
+    /// JSON parsing error
     #[error("JSON error: {source}")]
-    Json { source: serde_json::Error },
+    Json {
+        #[source]
+        source: serde_json::Error,
+    },
 }
 
 impl From<std::io::Error> for Error {
