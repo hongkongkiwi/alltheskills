@@ -38,6 +38,8 @@ pub enum SourceType {
     Claude,
     /// Cline skills
     Cline,
+    /// Cursor editor rules
+    Cursor,
     /// OpenClaw skills
     OpenClaw,
     /// Roo Code (formerly Roo Cline) skills
@@ -65,6 +67,8 @@ pub enum SkillFormat {
     ClaudePlugin,
     /// Cline skill format (cline.json)
     ClineSkill,
+    /// Cursor rules format (.cursorrules)
+    CursorRules,
     /// OpenClaw skill format (skill.json)
     OpenClawSkill,
     /// Roo Code skill format (roo.json, .roomodes)

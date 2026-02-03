@@ -1,5 +1,6 @@
 use alltheskills::providers::{
-    ClaudeProvider, ClineProvider, LocalProvider, MoltbotProvider, OpenClawProvider, RooProvider,
+    ClaudeProvider, ClineProvider, CursorProvider, LocalProvider, MoltbotProvider,
+    OpenClawProvider, RooProvider,
 };
 use alltheskills::{AllSkillsConfig, SkillReader};
 
@@ -10,6 +11,7 @@ pub async fn list_skills(_scope: Option<alltheskills::SkillScope>) -> Result<(),
     // Add all providers
     reader.add_provider(ClaudeProvider);
     reader.add_provider(ClineProvider);
+    reader.add_provider(CursorProvider);
     reader.add_provider(RooProvider);
     reader.add_provider(OpenClawProvider);
     reader.add_provider(MoltbotProvider);
@@ -24,7 +26,7 @@ pub async fn list_skills(_scope: Option<alltheskills::SkillScope>) -> Result<(),
         println!("  - Install a skill: alltheskills install <source>");
         println!("  - Add a source: alltheskills add-source <name> <path> --source-type <type>");
         println!();
-        println!("Supported source types: claude, cline, roo, openclaw, moltbot, local");
+        println!("Supported source types: claude, cline, cursor, roo, openclaw, moltbot, local");
         return Ok(());
     }
 

@@ -63,6 +63,10 @@ impl KnownSources {
         None
     }
 
+    pub fn cursor_rules_dir() -> Option<PathBuf> {
+        Self::detect_path("CURSOR_RULES_DIR", ["~/.cursor/rules", "~/.cursor"])
+    }
+
     fn detect_path(
         env_key: &str,
         fallbacks: impl IntoIterator<Item = &'static str>,

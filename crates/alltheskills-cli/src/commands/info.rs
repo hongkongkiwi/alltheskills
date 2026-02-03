@@ -1,5 +1,6 @@
 use alltheskills::providers::{
-    ClaudeProvider, ClineProvider, LocalProvider, MoltbotProvider, OpenClawProvider, RooProvider,
+    ClaudeProvider, ClineProvider, CursorProvider, LocalProvider, MoltbotProvider,
+    OpenClawProvider, RooProvider,
 };
 use alltheskills::{AllSkillsConfig, SkillReader};
 
@@ -9,6 +10,7 @@ pub async fn info_skill(name: &str) -> Result<(), anyhow::Error> {
 
     reader.add_provider(ClaudeProvider);
     reader.add_provider(ClineProvider);
+    reader.add_provider(CursorProvider);
     reader.add_provider(RooProvider);
     reader.add_provider(OpenClawProvider);
     reader.add_provider(MoltbotProvider);

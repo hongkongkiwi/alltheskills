@@ -1,5 +1,6 @@
 use alltheskills::providers::claude::ClaudeProvider;
 use alltheskills::providers::cline::ClineProvider;
+use alltheskills::providers::cursor::CursorProvider;
 use alltheskills::providers::github::GitHubProvider;
 use alltheskills::providers::local::LocalProvider;
 use alltheskills::providers::moltbot::MoltbotProvider;
@@ -45,6 +46,13 @@ fn test_moltbot_skills_dir_returns_path() {
 }
 
 #[test]
+fn test_cursor_rules_dir_returns_path() {
+    // The function returns Option<PathBuf>, verify it's callable
+    let result = KnownSources::cursor_rules_dir();
+    let _ = result;
+}
+
+#[test]
 fn test_skill_provider_trait_objects() {
     // Verify providers can be converted to trait objects
     let _provider: Box<dyn SkillProvider> = Box::new(ClaudeProvider);
@@ -53,6 +61,7 @@ fn test_skill_provider_trait_objects() {
     let _provider: Box<dyn SkillProvider> = Box::new(RooProvider);
     let _provider: Box<dyn SkillProvider> = Box::new(ClineProvider);
     let _provider: Box<dyn SkillProvider> = Box::new(MoltbotProvider);
+    let _provider: Box<dyn SkillProvider> = Box::new(CursorProvider);
 }
 
 #[test]
@@ -98,6 +107,13 @@ fn test_moltbot_provider_source_type() {
     let provider = MoltbotProvider;
     assert_eq!(provider.name(), "Moltbot Skills");
     assert_eq!(provider.source_type(), SourceType::Moltbot);
+}
+
+#[test]
+fn test_cursor_provider_source_type() {
+    let provider = CursorProvider;
+    assert_eq!(provider.name(), "Cursor Rules");
+    assert_eq!(provider.source_type(), SourceType::Cursor);
 }
 
 #[test]
@@ -153,6 +169,24 @@ fn test_can_handle_clawdbot_legacy_source() {
     let provider = MoltbotProvider;
     let source = SkillSource::Local {
         path: PathBuf::from("/home/user/.clawdbot/skills/my-skill"),
+    };
+    assert!(provider.can_handle(&source));
+}
+
+#[test]
+fn test_can_handle_cursor_source() {
+    let provider = CursorProvider;
+    let source = SkillSource::Local {
+        path: PathBuf::from("/home/user/.cursor/rules/my-rules.cursorrules"),
+    };
+    assert!(provider.can_handle(&source));
+}
+
+#[test]
+fn test_can_handle_cursor_project_source() {
+    let provider = CursorProvider;
+    let source = SkillSource::Local {
+        path: PathBuf::from("/my-project/.cursorrules"),
     };
     assert!(provider.can_handle(&source));
 }

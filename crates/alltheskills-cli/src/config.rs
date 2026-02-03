@@ -81,6 +81,7 @@ pub fn add_source(
             "cline" => SourceType::Cline,
             "openclaw" => SourceType::Custom("openclaw".to_string()),
             "roo" | "roocode" => SourceType::RooCode,
+            "cursor" => SourceType::Cursor,
             "codex" | "openai" => SourceType::OpenAICodex,
             "kilo" | "kilocode" => SourceType::KiloCode,
             "moltbot" | "clawdbot" => SourceType::Moltbot,
@@ -132,6 +133,11 @@ pub fn get_known_skill_directories() -> Vec<(String, PathBuf)> {
         dirs.push(("Moltbot".to_string(), path));
     }
 
+    // Check Cursor
+    if let Some(path) = alltheskills::KnownSources::cursor_rules_dir() {
+        dirs.push(("Cursor".to_string(), path));
+    }
+
     dirs
 }
 
@@ -142,6 +148,7 @@ pub fn supported_source_types() -> Vec<(&'static str, &'static str)> {
         ("claude", "Claude Code skills"),
         ("cline", "Cline skills"),
         ("roo, roocode", "Roo Code skills"),
+        ("cursor", "Cursor editor rules"),
         ("openclaw", "OpenClaw skills"),
         ("moltbot, clawdbot", "Moltbot (formerly ClawdBot) skills"),
         ("codex, openai", "OpenAI Codex skills"),

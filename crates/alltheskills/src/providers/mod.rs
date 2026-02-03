@@ -6,6 +6,7 @@
 pub mod claude;
 pub mod cline;
 pub mod cloudflare;
+pub mod cursor;
 pub mod detect;
 pub mod github;
 pub mod local;
@@ -22,6 +23,7 @@ pub use trait_::SkillProvider;
 pub use claude::ClaudeProvider;
 pub use cline::ClineProvider;
 pub use cloudflare::CloudflareProvider;
+pub use cursor::CursorProvider;
 pub use github::GitHubProvider;
 pub use local::LocalProvider;
 pub use moltbot::MoltbotProvider;
