@@ -1,7 +1,7 @@
 [workspace]
 members = [
-    "crates/allskills",
-    "crates/allskills-cli",
+    "crates/alltheskills",
+    "crates/alltheskills-cli",
 ]
 
 resolver = "2"
@@ -9,4 +9,4 @@ resolver = "2"
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
-authors = ["AllSkills Contributors"]
+authors = ["AllTheSkills Contributors"]

@@ -9,10 +9,12 @@ A Rust library and CLI tool for reading and installing AI skills from various so
 | Claude Code | `~/.claude/skills/`, `~/.claude/plugins/` | JSON/YAML + markdown |
 | Cline | `~/.cline/skills/`, VS Code extensions | JSON config + files |
 | OpenClaw | `~/.openclaw/skills/`, VS Code extensions | JSON config + files |
+| Vercel AI SDK | `~/.vercel/ai/skills/`, `~/.ai/skills/` | skill.json, ai.config.json |
+| Cloudflare Workers AI | `~/.cloudflare/workers/skills/` | worker.js/ts, wrangler.toml |
 | Roo Code | `~/.roo/skills/` | JSON/YAML |
 | OpenAI Codex | `~/.codex/skills/`, project config | JSON |
 | Kilo Code | `~/.kilo/skills/` | YAML + markdown |
-| GitHub (raw) | Direct repo URLs | Any skill format |
+| GitHub | Direct repo URLs | Any skill format |
 | Local paths | Custom directories | Format-agnostic |
 
 ## Self-Exposing Skill
@@ -20,46 +22,46 @@ A Rust library and CLI tool for reading and installing AI skills from various so
 The CLI can export itself as a Claude skill using:
 
 ```bash
-allskills export-as-skill --output ~/.claude/skills/allskills-manager
+alltheskills export-as-skill --output ~/.claude/skills/alltheskills-manager
 ```
 
-This creates a skill that wraps allskills functionality, allowing you to manage skills from within Claude.
+This creates a skill that wraps alltheskills functionality, allowing you to manage skills from within Claude.
 
 ## Installation
 
 ```bash
-cargo install allskills-cli
+cargo install alltheskills-cli
 ```
 
 ## Usage
 
 ```bash
 # List all skills
-allskills list
+alltheskills list
 
 # Install from GitHub
-allskills install --from https://github.com/user/skill-repo
+alltheskills install --from https://github.com/user/skill-repo
 
 # Search for skills
-allskills search git
+alltheskills search git
 
 # Get skill information
-allskills info my-skill
+alltheskills info my-skill
 
 # Add a custom source
-allskills add-source --name my-skills --path /path/to/skills --source-type local
+alltheskills add-source --name my-skills --path /path/to/skills --source-type local
 
 # Show configuration
-allskills config show
+alltheskills config show
 
 # Export as Claude skill
-allskills export-as-skill --output ~/.claude/skills/
+alltheskills export-as-skill --output ~/.claude/skills/
 ```
 
 ## Library Usage
 
 ```rust
-use allskills::{SkillReader, AllSkillsConfig, providers::ClaudeProvider};
+use alltheskills::{SkillReader, AllSkillsConfig, providers::ClaudeProvider};
 
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
@@ -77,13 +79,13 @@ async fn main() -> Result<(), anyhow::Error> {
 
 ## Configuration
 
-Configuration is stored in `~/.config/allskills/allskills.toml`:
+Configuration is stored in `~/.config/alltheskills/alltheskills.toml`:
 
 ```toml
 version = 1
 default_scope = "user"
-install_dir = ".allskills"
-cache_dir = ".allskills/cache"
+install_dir = ".alltheskills"
+cache_dir = ".alltheskills/cache"
 ```
 
 ## License

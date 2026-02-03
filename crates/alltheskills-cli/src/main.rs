@@ -5,7 +5,7 @@ mod commands;
 mod config;
 
 #[derive(Parser)]
-#[command(name = "allskills")]
+#[command(name = "alltheskills")]
 #[command(author, version, about, long_about = None)]
 struct Args {
     #[command(subcommand)]
@@ -76,10 +76,10 @@ async fn main() -> Result<(), anyhow::Error> {
     match args.command {
         Commands::List { scope } => {
             let scope = scope.map(|s| match s.to_lowercase().as_str() {
-                "global" => allskills::SkillScope::Global,
-                "user" => allskills::SkillScope::User,
-                "project" => allskills::SkillScope::Project,
-                _ => allskills::SkillScope::User,
+                "global" => alltheskills::SkillScope::Global,
+                "user" => alltheskills::SkillScope::User,
+                "project" => alltheskills::SkillScope::Project,
+                _ => alltheskills::SkillScope::User,
             });
             commands::list_skills(scope).await?;
         }
@@ -97,10 +97,10 @@ async fn main() -> Result<(), anyhow::Error> {
         }
         Commands::AddSource { name, path, source_type, scope } => {
             let scope = match scope.to_lowercase().as_str() {
-                "global" => allskills::SkillScope::Global,
-                "user" => allskills::SkillScope::User,
-                "project" => allskills::SkillScope::Project,
-                _ => allskills::SkillScope::User,
+                "global" => alltheskills::SkillScope::Global,
+                "user" => alltheskills::SkillScope::User,
+                "project" => alltheskills::SkillScope::Project,
+                _ => alltheskills::SkillScope::User,
             };
             let mut config = config::load_config()?;
             config::add_source(&mut config, &name, &path, &source_type, scope);

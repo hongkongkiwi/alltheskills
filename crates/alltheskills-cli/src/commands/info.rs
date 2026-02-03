@@ -1,12 +1,12 @@
-use allskills::{SkillReader, AllSkillsConfig};
+use alltheskills::{SkillReader, AllSkillsConfig};
 
 pub async fn info_skill(name: &str) -> Result<(), anyhow::Error> {
     let config = AllSkillsConfig::default();
     let mut reader = SkillReader::new(config);
 
-    reader.add_provider(allskills::providers::claude::ClaudeProvider);
-    reader.add_provider(allskills::providers::local::LocalProvider);
-    reader.add_provider(allskills::providers::openclaw::OpenClawProvider);
+    reader.add_provider(alltheskills::providers::claude::ClaudeProvider);
+    reader.add_provider(alltheskills::providers::local::LocalProvider);
+    reader.add_provider(alltheskills::providers::openclaw::OpenClawProvider);
 
     let name_lower = name.to_lowercase();
 
@@ -17,7 +17,7 @@ pub async fn info_skill(name: &str) -> Result<(), anyhow::Error> {
 
     if skills.is_empty() {
         println!("Skill '{}' not found.", name);
-        println!("Try 'allskills list' to see available skills.");
+        println!("Try 'alltheskills list' to see available skills.");
     } else {
         let skill = &skills[0];
         println!("Skill: {}", skill.name);

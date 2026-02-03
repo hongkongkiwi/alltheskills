@@ -1,12 +1,12 @@
-use allskills::types::SkillSource;
-use allskills::providers::github::GitHubProvider;
-use allskills::providers::local::LocalProvider;
-use allskills::SkillProvider;
+use alltheskills::types::SkillSource;
+use alltheskills::providers::github::GitHubProvider;
+use alltheskills::providers::local::LocalProvider;
+use alltheskills::SkillProvider;
 use std::path::PathBuf;
 
 pub async fn install_skill(source: &str, target: Option<&str>) -> Result<(), anyhow::Error> {
     let target_path = target.map(PathBuf::from)
-        .unwrap_or_else(|| PathBuf::from(".allskills"));
+        .unwrap_or_else(|| PathBuf::from(".alltheskills"));
 
     let skill_source = if source.starts_with("https://github.com/") {
         // Parse GitHub URL

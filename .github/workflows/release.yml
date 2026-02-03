@@ -25,13 +25,13 @@ jobs:
         run: rustup default stable
 
       - name: Build release
-        run: cargo build --release --package allskills-cli
+        run: cargo build --release --package alltheskills-cli
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: allskills-cli${{ matrix.artifact_suffix }}
-          path: target/release/allskills
+          name: alltheskills-cli${{ matrix.artifact_suffix }}
+          path: target/release/alltheskills
           if-no-files-found: error
 
   create-github-release:

@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "allskills"
+name = "alltheskills"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -27,14 +27,15 @@ dependencies = [
  "serde_yaml",
  "thiserror",
  "tokio",
+ "toml",
  "url",
 ]
 
 [[package]]
-name = "allskills-cli"
+name = "alltheskills-cli"
 version = "0.1.0"
 dependencies = [
- "allskills",
+ "alltheskills",
  "anyhow",
  "assert_cmd",
  "clap",

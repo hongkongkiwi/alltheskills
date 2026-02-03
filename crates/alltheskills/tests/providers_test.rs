@@ -1,9 +1,9 @@
-use allskills::providers::{KnownSources, SkillProvider};
-use allskills::providers::claude::ClaudeProvider;
-use allskills::providers::local::LocalProvider;
-use allskills::providers::openclaw::OpenClawProvider;
-use allskills::providers::github::GitHubProvider;
-use allskills::types::{SkillSource, SourceType};
+use alltheskills::providers::{KnownSources, SkillProvider};
+use alltheskills::providers::claude::ClaudeProvider;
+use alltheskills::providers::local::LocalProvider;
+use alltheskills::providers::openclaw::OpenClawProvider;
+use alltheskills::providers::github::GitHubProvider;
+use alltheskills::types::{SkillSource, SourceType};
 use std::path::PathBuf;
 
 #[test]

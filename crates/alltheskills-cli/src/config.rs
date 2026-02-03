@@ -1,8 +1,8 @@
 use std::path::PathBuf;
-use allskills::{AllSkillsConfig, SkillScope, SourceType};
-use allskills::types::SourceConfig;
+use alltheskills::{AllSkillsConfig, SkillScope, SourceType};
+use alltheskills::types::SourceConfig;
 
-const CONFIG_FILENAME: &str = "allskills.toml";
+const CONFIG_FILENAME: &str = "alltheskills.toml";
 
 /// Get the platform-appropriate config directory
 pub fn get_config_dir() -> PathBuf {
@@ -36,7 +36,7 @@ pub fn get_config_dir() -> PathBuf {
 
 /// Get the config file path
 pub fn get_config_path() -> PathBuf {
-    get_config_dir().join("allskills").join(CONFIG_FILENAME)
+    get_config_dir().join("alltheskills").join(CONFIG_FILENAME)
 }
 
 /// Load configuration from the config file
@@ -57,7 +57,7 @@ pub fn load_config() -> Result<AllSkillsConfig, anyhow::Error> {
 
 /// Save configuration to the config file
 pub fn save_config(config: &AllSkillsConfig) -> Result<(), anyhow::Error> {
-    let config_dir = get_config_dir().join("allskills");
+    let config_dir = get_config_dir().join("alltheskills");
     std::fs::create_dir_all(&config_dir)?;
 
     let content = toml::to_string_pretty(config)?;
@@ -106,22 +106,22 @@ pub fn get_known_skill_directories() -> Vec<(String, PathBuf)> {
     let mut dirs = Vec::new();
 
     // Check Claude
-    if let Some(path) = allskills::KnownSources::claude_skills_dir() {
+    if let Some(path) = alltheskills::KnownSources::claude_skills_dir() {
         dirs.push(("Claude".to_string(), path));
     }
 
     // Check Cline
-    if let Some(path) = allskills::KnownSources::cline_skills_dir() {
+    if let Some(path) = alltheskills::KnownSources::cline_skills_dir() {
         dirs.push(("Cline".to_string(), path));
     }
 
     // Check OpenClaw
-    if let Some(path) = allskills::KnownSources::openclaw_skills_dir() {
+    if let Some(path) = alltheskills::KnownSources::openclaw_skills_dir() {
         dirs.push(("OpenClaw".to_string(), path));
     }
 
     // Check Roo Code
-    if let Some(path) = allskills::KnownSources::roo_skills_dir() {
+    if let Some(path) = alltheskills::KnownSources::roo_skills_dir() {
         dirs.push(("Roo Code".to_string(), path));
     }
 

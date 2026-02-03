@@ -1,5 +1,5 @@
-use allskills::Skill;
-use allskills::types::{SkillFormat, SourceType, SkillMetadata, SkillScope, SkillSource};
+use alltheskills::Skill;
+use alltheskills::types::{SkillFormat, SourceType, SkillMetadata, SkillScope, SkillSource};
 use std::path::PathBuf;
 
 #[test]

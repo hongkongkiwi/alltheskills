@@ -1,12 +1,12 @@
-use allskills::{SkillReader, AllSkillsConfig};
+use alltheskills::{SkillReader, AllSkillsConfig};
 
 pub async fn search_skills(query: &str) -> Result<(), anyhow::Error> {
     let config = AllSkillsConfig::default();
     let mut reader = SkillReader::new(config);
 
-    reader.add_provider(allskills::providers::claude::ClaudeProvider);
-    reader.add_provider(allskills::providers::local::LocalProvider);
-    reader.add_provider(allskills::providers::openclaw::OpenClawProvider);
+    reader.add_provider(alltheskills::providers::claude::ClaudeProvider);
+    reader.add_provider(alltheskills::providers::local::LocalProvider);
+    reader.add_provider(alltheskills::providers::openclaw::OpenClawProvider);
 
     let query_lower = query.to_lowercase();
 

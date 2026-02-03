@@ -18,8 +18,8 @@ impl Default for AllSkillsConfig {
             version: 1,
             default_scope: SkillScope::User,
             sources: Vec::new(),
-            install_dir: PathBuf::from(".allskills"),
-            cache_dir: PathBuf::from(".allskills/cache"),
+            install_dir: PathBuf::from(".alltheskills"),
+            cache_dir: PathBuf::from(".alltheskills/cache"),
         }
     }
 }

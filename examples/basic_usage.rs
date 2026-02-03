@@ -1,4 +1,4 @@
-use allskills::{SkillReader, AllSkillsConfig, SkillScope};
+use alltheskills::{SkillReader, AllSkillsConfig, SkillScope};
 
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
@@ -9,9 +9,9 @@ async fn main() -> Result<(), anyhow::Error> {
     let mut reader = SkillReader::new(config);
 
     // Add providers
-    reader.add_provider(allskills::providers::ClaudeProvider);
-    reader.add_provider(allskills::providers::LocalProvider);
-    reader.add_provider(allskills::providers::OpenClawProvider);
+    reader.add_provider(alltheskills::providers::ClaudeProvider);
+    reader.add_provider(alltheskills::providers::LocalProvider);
+    reader.add_provider(alltheskills::providers::OpenClawProvider);
 
     // List all skills from all sources
     println!("Listing all skills...");

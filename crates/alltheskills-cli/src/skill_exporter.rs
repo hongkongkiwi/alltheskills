@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
-/// Generates a Claude skill README for the allskills manager
-pub fn generate_allskills_skill_readme() -> String {
+/// Generates a Claude skill README for the alltheskills manager
+pub fn generate_alltheskills_skill_readme() -> String {
     r#"# AllSkills Manager
 
 A skill for managing AI skills from Claude, Cline, OpenClaw, Roo Code, and more.
@@ -10,32 +10,32 @@ A skill for managing AI skills from Claude, Cline, OpenClaw, Roo Code, and more.
 
 ### List all skills
 ```bash
-allskills list
+alltheskills list
 ```
 
 ### Search for skills
 ```bash
-allskills search <query>
+alltheskills search <query>
 ```
 
 ### Install a new skill
 ```bash
-allskills install --from <source>
+alltheskills install --from <source>
 ```
 
 ### Get skill information
 ```bash
-allskills info <skill-name>
+alltheskills info <skill-name>
 ```
 
 ## Configuration
 
-You can configure allskills via `~/.config/allskills/allskills.toml`:
+You can configure alltheskills via `~/.config/alltheskills/alltheskills.toml`:
 
 ```toml
 default_scope = "user"
-install_dir = ".allskills"
-cache_dir = ".allskills/cache"
+install_dir = ".alltheskills"
+cache_dir = ".alltheskills/cache"
 ```
 
 ## Environment Variables
@@ -45,10 +45,10 @@ cache_dir = ".allskills/cache"
 "#.to_string()
 }
 
-/// Generates a claude.json for the allskills skill
+/// Generates a claude.json for the alltheskills skill
 pub fn generate_claude_json() -> String {
     r#"{
-  "name": "allskills-manager",
+  "name": "alltheskills-manager",
   "description": "Manage AI skills from various sources including Claude, Cline, OpenClaw, Roo Code, and GitHub",
   "version": "0.1.0",
   "author": "AllSkills",
