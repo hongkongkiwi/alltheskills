@@ -85,6 +85,8 @@ pub fn add_source(
             "codex" | "openai" => SourceType::OpenAICodex,
             "kilo" | "kilocode" => SourceType::KiloCode,
             "moltbot" | "clawdbot" => SourceType::Moltbot,
+            "vercel" => SourceType::Custom("vercel".to_string()),
+            "cloudflare" => SourceType::Custom("cloudflare".to_string()),
             "github" => SourceType::GitHub,
             "local" => SourceType::Local,
             _ => SourceType::Custom(source_type.to_string()),
@@ -153,6 +155,8 @@ pub fn supported_source_types() -> Vec<(&'static str, &'static str)> {
         ("moltbot, clawdbot", "Moltbot (formerly ClawdBot) skills"),
         ("codex, openai", "OpenAI Codex skills"),
         ("kilo, kilocode", "Kilo Code skills"),
+        ("vercel", "Vercel AI SDK skills"),
+        ("cloudflare", "Cloudflare Workers AI skills"),
         ("github", "GitHub repository"),
         ("local", "Local directory"),
     ]

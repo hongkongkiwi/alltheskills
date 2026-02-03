@@ -1,6 +1,6 @@
 use alltheskills::providers::{
-    ClaudeProvider, ClineProvider, CursorProvider, LocalProvider, MoltbotProvider,
-    OpenClawProvider, RooProvider,
+    ClaudeProvider, ClineProvider, CloudflareProvider, CodexProvider, CursorProvider,
+    KiloProvider, LocalProvider, MoltbotProvider, OpenClawProvider, RooProvider, VercelProvider,
 };
 use alltheskills::{AllSkillsConfig, SkillReader};
 
@@ -14,6 +14,10 @@ pub async fn info_skill(name: &str) -> Result<(), anyhow::Error> {
     reader.add_provider(RooProvider);
     reader.add_provider(OpenClawProvider);
     reader.add_provider(MoltbotProvider);
+    reader.add_provider(CodexProvider);
+    reader.add_provider(KiloProvider);
+    reader.add_provider(VercelProvider);
+    reader.add_provider(CloudflareProvider);
     reader.add_provider(LocalProvider);
 
     let name_lower = name.to_lowercase();
