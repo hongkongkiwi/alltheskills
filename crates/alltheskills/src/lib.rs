@@ -47,9 +47,58 @@
 //! | GitHub | Repository URLs | Any format |
 //! | Local | Custom paths | Any format |
 
+//! # AllTheSkills
+//!
+//! A Rust library for reading and installing AI skills from various sources
+//! including Claude, Cline, Cursor, OpenAI Codex, Kilo Code, and more.
+//!
+//! ## Quick Start
+//!
+//! ```no_run
+//! use alltheskills::{SkillReader, AllSkillsConfig, providers::ClaudeProvider};
+//!
+//! # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+//! let config = AllSkillsConfig::default();
+//! let mut reader = SkillReader::new(config);
+//!
+//! // Add providers for sources you want to read from
+//! reader.add_provider(ClaudeProvider);
+//! reader.add_provider(alltheskills::providers::LocalProvider);
+//!
+//! // List all skills
+//! let skills = reader.list_all_skills().await?;
+//! println!("Found {} skill(s)", skills.len());
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! ## Features
+//!
+//! - **Unified Skill Format** - Read skills from multiple AI assistants with a single API
+//! - **Multiple Providers** - Support for Claude, Cline, Cursor, OpenClaw, Vercel, Cloudflare,
+//!   Roo Code, OpenAI Codex, Kilo Code, Moltbot, GitHub, and more
+//! - **Extensible** - Trait-based provider architecture for adding new sources
+//! - **Async** - Built on tokio for asynchronous operations
+//!
+//! ## Supported Sources
+//!
+//! | Source | Location | Format |
+//! |--------|----------|--------|
+//! | Claude Code | `~/.claude/skills/` | `claude.json`, `skill.md` |
+//! | Cline | `~/.cline/skills/` | `cline.json`, `custom-instructions.md` |
+//! | Cursor | `~/.cursor/rules/`, `.cursorrules` | `.cursorrules`, `cursor.json` |
+//! | OpenClaw | `~/.openclaw/skills/` | `skill.json` |
+//! | Roo Code | `~/.roo/skills/` | `roo.json`, `.roomodes` |
+//! | OpenAI Codex | `~/.codex/skills/` | `codex.json`, `instructions.md` |
+//! | Kilo Code | `~/.kilo/skills/` | `kilo.yaml`, `kilo.yml` |
+//! | Moltbot | `~/.moltbot/skills/` | `manifest.json`, `SKILL.md` |
+//! | Vercel AI SDK | `~/.vercel/ai/skills/` | `skill.json`, `ai.config.json` |
+//! | Cloudflare Workers AI | `~/.cloudflare/workers/skills/` | `worker.js/ts`, `wrangler.toml` |
+//! | GitHub | Repository URLs | Any format |
+//! | Local | Custom paths | Any format |
+
 use futures::stream::{self, StreamExt};
 
-pub mod core;
 pub mod error;
 pub mod providers;
 pub mod types;

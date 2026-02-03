@@ -22,8 +22,10 @@ impl crate::providers::SkillProvider for OpenClawProvider {
     async fn list_skills(&self, config: &crate::types::SourceConfig) -> Result<Vec<Skill>> {
         let path = match &config.source_type {
             SourceType::Custom(name) if name == "openclaw" => {
-                // Need to get path from somewhere - using current dir as fallback
-                std::env::current_dir()?
+                // Use home directory for OpenClaw skills
+                dirs::home_dir()
+                    .map(|h| h.join(".openclaw/skills"))
+                    .unwrap_or_else(|| PathBuf::from(".openclaw/skills"))
             }
             _ => return Ok(vec![]),
         };

@@ -9,12 +9,31 @@ resolver = "2"
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
-authors = ["AllTheSkills Contributors"]
-description = "A Rust library and CLI for reading and installing AI skills from various sources"
+authors = ["AllTheSkills Contributors <contributors@alltheskills.dev>"]
+description = "A Rust library and CLI for reading and installing AI skills from Claude, Cline, Cursor, Codex, and more"
 repository = "https://github.com/alltheskills/alltheskills"
 homepage = "https://github.com/alltheskills/alltheskills"
 documentation = "https://docs.rs/alltheskills"
 license = "MIT"
-keywords = ["ai", "skills", "claude", "cline", "agent"]
-categories = ["command-line-utilities", "development-tools", "asynchronous"]
+keywords = [
+    "ai",
+    "skills",
+    "claude",
+    "cline",
+    "cursor",
+    "codex",
+    "kilo",
+    "roo",
+    "mcp",
+    "agents",
+    "llm",
+    "prompts",
+]
+categories = [
+    "command-line-utilities",
+    "development-tools",
+    "asynchronous",
+    "config",
+]
 readme = "README.md"
+rust-version = "1.85"

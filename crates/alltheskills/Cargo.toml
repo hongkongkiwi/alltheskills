@@ -10,6 +10,24 @@ license.workspace = true
 keywords.workspace = true
 categories.workspace = true
 readme.workspace = true
+rust-version.workspace = true
+
+authors.workspace = true
+exclude = ["/tests", "/examples", ".github"]
+
+[package.metadata]
+supports = [
+    "claude",
+    "cline", 
+    "cursor",
+    "openclaw",
+    "roo",
+    "codex",
+    "kilo",
+    "moltbot",
+    "vercel",
+    "cloudflare",
+]
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }

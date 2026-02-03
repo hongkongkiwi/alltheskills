@@ -56,10 +56,26 @@ enum Commands {
         #[arg(long, default_value = "user")]
         scope: String,
     },
-    /// Remove a source from the configuration
-    RemoveSource {
-        /// Name of the source to remove
+    /// Remove a skill or source from the configuration
+    Remove {
+        /// Name of the skill or source to remove
         name: String,
+        /// Remove a source instead of a skill
+        #[arg(long)]
+        source: bool,
+        /// Force removal without confirmation
+        #[arg(short, long)]
+        force: bool,
+    },
+    /// Update skills from their sources
+    Update {
+        /// Specific skill to update (if not provided, updates all)
+        skill: Option<String>,
+    },
+    /// Validate skill structure
+    Validate {
+        /// Path to skill directory (if not provided, validates all)
+        path: Option<String>,
     },
     /// Show the current configuration
     Config {
@@ -112,14 +128,18 @@ async fn main() -> Result<(), anyhow::Error> {
             config::save_config(&config)?;
             println!("Added source '{}' to configuration", name);
         }
-        Commands::RemoveSource { name } => {
-            let mut config = config::load_config()?;
-            if config::remove_source(&mut config, &name) {
-                config::save_config(&config)?;
-                println!("Removed source '{}' from configuration", name);
+        Commands::Remove { name, source, force } => {
+            if source {
+                commands::remove::remove_source(&name).await?;
             } else {
-                println!("Source '{}' not found in configuration", name);
+                commands::remove_skill(&name, force).await?;
             }
+        }
+        Commands::Update { skill } => {
+            commands::update_skill(skill.as_deref()).await?;
+        }
+        Commands::Validate { path } => {
+            commands::validate_skill(path.as_deref()).await?;
         }
         Commands::Config { path } => {
             if path {

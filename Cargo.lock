@@ -41,6 +41,7 @@ dependencies = [
  "assert_cmd",
  "clap",
  "predicates",
+ "serde_json",
  "tokio",
  "toml",
 ]

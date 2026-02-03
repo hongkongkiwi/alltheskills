@@ -99,6 +99,7 @@ pub fn add_source(
 }
 
 /// Remove a source from the configuration
+#[allow(dead_code)]
 pub fn remove_source(config: &mut AllSkillsConfig, name: &str) -> bool {
     let initial_len = config.sources.len();
     config.sources.retain(|s| s.name != name);
